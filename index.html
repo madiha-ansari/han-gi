@@ -89,17 +89,26 @@
             color: #444;
         }
 
-        p {
+        .word-container {
+            padding: 5px;
+            margin-bottom: 5px;
+            background-color: #f9f9f9;
+            border-radius: 3px;
+        }
+
+        .character {
+            display: inline;
             font-size: 16px;
             color: #555;
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Enter a Character</h2>
-        <input type="text" id="inputChar" maxlength="1" placeholder="Type a character">
-        <button onclick="addCharacter()">Add</button>
+        <h2>Enter a Word</h2>
+        <input type="text" id="inputWord" placeholder="Type a word">
+        <button onclick="addCharacters()">Add</button>
 
         <div id="vowelsDiv" class="output-div">
             <h3>Vowels</h3>
@@ -111,30 +120,51 @@
     </div>
 
     <script>
-        function addCharacter() {
-            var char = document.getElementById("inputChar").value.toLowerCase();
+        function addCharacters() {
+            // Get input word and convert to lowercase
+            var word = document.getElementById("inputWord").value.toLowerCase();
 
-            if (char.length !== 1) {
-                alert("Please enter only one character.");
+            // Check if input contains any numbers or symbols
+            if (/[^a-zA-Z]/.test(word)) {
+                alert("Invalid input; please enter alphabet characters only.");
                 return;
             }
 
-            if (!isNaN(char)) {
-                alert("Not a character; please enter an alphabet character.");
-                return;
-            }
-
+            // Define vowels
             var vowels = "aeiou";
-            var vowelsDiv = document.getElementById("vowelsDiv");
-            var consonantsDiv = document.getElementById("consonantsDiv");
 
-            if (vowels.indexOf(char) !== -1) {
-                vowelsDiv.innerHTML += "<p>" + char + "</p>";
-            } else {
-                consonantsDiv.innerHTML += "<p>" + char + "</p>";
+            // Create containers for the new word
+            var vowelsContainer = document.createElement("div");
+            vowelsContainer.className = "word-container";
+            var consonantsContainer = document.createElement("div");
+            consonantsContainer.className = "word-container";
+
+            // Check each character in the word
+            for (var i = 0; i < word.length; i++) {
+                var char = word[i];
+
+                // Check if character is a vowel or consonant
+                var characterElement = document.createElement("span");
+                characterElement.className = "character";
+                characterElement.textContent = char;
+
+                if (vowels.indexOf(char) !== -1) {
+                    vowelsContainer.appendChild(characterElement);
+                } else {
+                    consonantsContainer.appendChild(characterElement);
+                }
             }
 
-            document.getElementById("inputChar").value = "";
+            // Append the word containers to the respective divs
+            if (vowelsContainer.innerHTML !== "") {
+                document.getElementById("vowelsDiv").appendChild(vowelsContainer);
+            }
+            if (consonantsContainer.innerHTML !== "") {
+                document.getElementById("consonantsDiv").appendChild(consonantsContainer);
+            }
+
+            // Clear the input field
+            document.getElementById("inputWord").value = "";
         }
     </script>
 </body>
